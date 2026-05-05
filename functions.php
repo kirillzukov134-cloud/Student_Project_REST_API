@@ -62,7 +62,30 @@ function AdditionStudent($pdo, $data){
             ];
         }
 }
-// // //Функциия для подробной информации о студенте
+
+// Добавить оценку
+function AdditionGrade($pdo, $data) {
+    $sql = "INSERT INTO `grades` (`grade`, `student_id`, `subject_id`) 
+            VALUES (:grade, :student_id, :subject_id)";
+    $statement = $pdo->prepare($sql);
+    $statement->execute($data);
+        if($statement){
+            http_response_code(200);
+            $response = [
+                'status' => true,
+                'message' => 'Успешное добавление оценки',
+                'id' => $pdo->lastInsertId()
+            ];
+            echo json_encode($response);
+        }else {
+            http_response_code(404);
+            $response = [
+                'status' => false,
+                'message' => 'Ошибка при добавлении оценки'
+            ];
+        }
+}
+// Функциия для подробной информации о студенте
 function ShowMoreDetails($pdo, $id){
     $sql = "SELECT 
         students.id,
@@ -99,18 +122,7 @@ function ShowMoreDetails($pdo, $id){
 //     return $statement->execute($data);
 // }
 
-// // Добавить оценку
-// function AdditionGrade($pdo, $data) {
-//     $sql = "INSERT INTO `grades` (`grade`, `student_id`, `subject_id`) 
-//             VALUES (:grade, :student_id, :subject_id)";
-    
-//     $statement = $pdo->prepare($sql);
-//     return $statement->execute([
-//         ':grade' => $data['grade'],
-//         ':student_id' => $data['student_id'],
-//         ':subject_id' => $data['subject_id']
-//     ]);
-// }
+
 
 
 
@@ -158,7 +170,7 @@ function getStudentById($pdo, $id){
     $result = $statement->fetch(PDO::FETCH_ASSOC);
 
     if($result){
-        echo http_response_code(200);
+        echo json_encode($result);
     }else {
         http_response_code(404);
         echo json_encode(['Студент не найден']);
@@ -207,11 +219,24 @@ function DeleteStudent($pdo, $id){
 //     return $statement->execute(['id' => $id]);    
 // }
 
-// function DeleteGrade($pdo, $id){
-//     $sql = "DELETE FROM `grades` WHERE id = :id";
-//     $statement = $pdo->prepare($sql);
-//     return $statement->execute(['id' => $id]);    
-// }
+function DeleteGrade($pdo, $id){
+    $sql = "DELETE FROM `grades` WHERE id = :id";
+    $statement = $pdo->prepare($sql);
+    $statement->execute(['id' => $id]);
+if($statement->rowCount() > 0){
+        http_response_code(200);
+        echo json_encode([
+            'status' => true,
+            'message' => 'Успешное удаление'
+        ]);
+    }else{
+        http_response_code(404);
+        echo json_encode([
+            'status' => false,
+            'message' => 'Ошибка при удалении'
+        ]);
+    }  
+}
 
 
 // //Функция которая выводит все предметы
