@@ -1,6 +1,6 @@
 <?php
-require './connectDB.php';
-require './functions.php';
+require './DataBase/connectDB.php';
+require './Functions/functions.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
@@ -17,52 +17,92 @@ $type = $params[0];
 $id = $params[1];
 
 switch($type){
+    //СТУДЕНТЫ
     case 'students':
         switch($method){
+            //Вывод несколько | одного студента
             case 'GET':
-            if(!empty($id)){
-                ShowMoreDetails($pdo, $id);
-            }else {
-                SelectAllStudents($pdo);
-            }
-            break;
-        }
-        switch($method){
+                if(!empty($id)){
+                    ShowMoreDetails($pdo, $id);
+                } else {
+                    SelectAllStudents($pdo);
+                }
+                break;
+            //Добавление студента
             case 'POST':
                 AdditionStudent($pdo, $_POST);
-            break;
-        }
-        switch($method){
+                break;
+            //Удаленеие студента
             case 'DELETE':
-            if(!empty($id)){
-                DeleteStudent($pdo, $id);    
-            }
+                if(!empty($id)){
+                    DeleteStudent($pdo, $id);    
+                }
+                break;
+            //Редактирование студента
+            case 'PATCH':
+                $data = json_decode(file_get_contents('php://input'), true);
+                EditStudent($pdo, $id, $data);
+                break;
         }
-break;
+    break;
+
+    //ОЦЕНКИ
     case 'grades':
         switch($method){
+            //Вывести оценку
             case 'GET':
-            if(!empty($id)){
-                getGradeById($pdo, $id);
-            }
-            elseif(!empty($_GET['student_id'])){
-                GradesStudent($pdo, $_GET['student_id']);
-            }
-        break;
-        }
-        switch($method){
+                if(!empty($_GET['student_id'])){
+                    GradesStudent($pdo, $_GET['student_id']);
+                }
+                break;
+            //Добавление оценки
             case 'POST':
-            AdditionGrade($pdo, $_POST);
-            break;
-        }
-        switch($method){
+                AdditionGrade($pdo, $_POST);
+                break;
+            //Удаление оценки
             case 'DELETE':
-            if(!empty($id)){
-                DeleteGrade($pdo, $id);                
-            }
-            break;
+                if(!empty($id)){
+                    DeleteGrade($pdo, $id);                
+                }
+                break;
+            //Редактирование оценок
+            case 'PATCH':
+                $data = json_decode(file_get_contents('php://input'), true);
+                EditGrade($pdo, $id, $data);
+                break; // Добавлен пропущенный break
         }
+    break; // Добавлен пропущенный break
+
+    //ПРЕДМЕТЫ
+    case 'subjects':
+        switch($method){
+            //Вывод несколько | один предмет
+            case 'GET':
+                if(!empty($id)){
+                    getSubjectById($pdo, $id);
+                }else {
+                    getAllSubjects($pdo);
+                }
+                break;
+            //Добавление предмета
+            case 'POST':
+                AdditionSubjects($pdo, $_POST);
+                break;
+            //Редактирование предмета
+            case 'PATCH':
+                $data = json_decode(file_get_contents('php://input'), true);
+                EditSubject($pdo, $id, $data);
+                break;
+            //Удаление предмета
+            case 'DELETE':
+                if(!empty($id)){
+                    DeleteSubject($pdo, $id);
+                }
+                break;
+        }
+    break;
 }
+
 // switch($method){
 //     case 'GET':
 //     if($type === 'students'){

@@ -111,21 +111,6 @@ function ShowMoreDetails($pdo, $id){
     }
 }
 
-// //Функция которая добавляет предмет
-// function AdditionSubjects($pdo, $data){
-//     $data = [
-//         "Name_Subjects"=> $_POST["Name_Subjects"],
-//     ];
-    
-//     $sql = "INSERT INTO `subjects`(`Name_subjects`) VALUES (:Name_Subjects)";
-//     $statement = $pdo->prepare($sql);
-//     return $statement->execute($data);
-// }
-
-
-
-
-
 
 //Функция для получения всех оценок студента по всем предметам
 function GradesStudent($pdo, $student_id) {
@@ -148,19 +133,19 @@ function GradesStudent($pdo, $student_id) {
     }
 }
 
-// Получить оценку по ID
-function getGradeById($pdo, $id) {
-    $sql = "SELECT * FROM grades WHERE id = :id";
-    $statement = $pdo->prepare($sql);
-    $statement->execute([':id' => $id]);
-    $grade = $statement->fetch(PDO::FETCH_ASSOC);
-    if ($grade) {
-        echo json_encode($grade);
-    } else {
-        http_response_code(404);
-        echo json_encode(['message' => 'Запись не найдена']);
-    }
-}
+// // Получить оценку по ID
+// function getGradeById($pdo, $id) {
+//     $sql = "SELECT * FROM grades WHERE id = :id";
+//     $statement = $pdo->prepare($sql);
+//     $statement->execute([':id' => $id]);
+//     $grade = $statement->fetch(PDO::FETCH_ASSOC);
+//     if ($grade) {
+//         echo json_encode($grade);
+//     } else {
+//         http_response_code(404);
+//         echo json_encode(['message' => 'Запись не найдена']);
+//     }
+// }
 
 //Функция для получения данных одного студента в edit.details.php
 function getStudentById($pdo, $id){
@@ -177,20 +162,35 @@ function getStudentById($pdo, $id){
     }
 }
 
-// //Функция для обновления данных существующего студента
-// function EditStudent($pdo, $data){
-//     $sql = "UPDATE `students` SET 
-//         `Name_student` = :Name_student,
-//         `Surname_student` = :Surname_student,
-//         `phone` = :phone,
-//         `email` = :email,
-//         `group_id` = :group_id,
-//         `birth_date` = :birth_date
-//     WHERE `id` = :id";
-    
-//     $statement = $pdo->prepare($sql);
-//     return $statement->execute($data);
-// }
+//Функция для обновления данных существующего студента
+function EditStudent($pdo, $id, $data){
+    $data['id'] = $id;
+    $sql = "UPDATE `students` SET 
+        `Name_student` = :Name_student,
+        `Surname_student` = :Surname_student,
+        `phone` = :phone,
+        `email` = :email,
+        `group_id` = :group_id,
+        `birth_date` = :birth_date
+    WHERE `id` = :id";
+    $statement = $pdo->prepare($sql);
+    if($statement->execute($data)){
+        if($statement->rowCount() > 0){
+            $response = [
+                "status" => true,
+                "message" => "Successfully updated",
+            ];
+            echo json_encode($response);            
+        } else {
+            http_response_code(400);
+            $response = [
+                "status" => "error",
+                "message" => "Error updating student!"
+            ];
+            echo json_encode($response);
+        }
+    } 
+}
 
 //Удаление студента в view.details.student.php
 
@@ -212,18 +212,31 @@ function DeleteStudent($pdo, $id){
         ]);
     }
 }
-
-// function DeleteSubject($pdo, $id){
-//     $sql = "DELETE FROM `subjects` WHERE id = :id";
-//     $statement = $pdo->prepare($sql);
-//     return $statement->execute(['id' => $id]);    
-// }
-
 function DeleteGrade($pdo, $id){
     $sql = "DELETE FROM `grades` WHERE id = :id";
     $statement = $pdo->prepare($sql);
     $statement->execute(['id' => $id]);
-if($statement->rowCount() > 0){
+        
+    if($statement->rowCount() > 0){
+            http_response_code(200);
+            echo json_encode([
+                'status' => true,
+                'message' => 'Успешное удаление'
+            ]);
+        }else{
+            http_response_code(404);
+            echo json_encode([
+                'status' => false,
+                'message' => 'Ошибка при удалении'
+            ]);
+        }  
+}
+
+function DeleteSubject($pdo, $id){
+    $sql = "DELETE FROM `subjects` WHERE id = :id";
+    $statement = $pdo->prepare($sql);
+    $statement->execute(['id' => $id]);
+    if($statement->rowCount() > 0){
         http_response_code(200);
         echo json_encode([
             'status' => true,
@@ -235,35 +248,93 @@ if($statement->rowCount() > 0){
             'status' => false,
             'message' => 'Ошибка при удалении'
         ]);
-    }  
+    }      
 }
 
+//Функция которая выводит все предметы
+function getAllSubjects($pdo){
+    $sql = 'SELECT id, Name_subjects FROM subjects';
+    $statement = $pdo->prepare($sql);
+    $statement->execute();
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    if($result){
+        http_response_code(200);
+        echo json_encode($result);
+    }else {
+        http_response_code(404);
+        echo json_encode([
+            'status' => false,
+            "message"=> "Ошибка при выводе всех оценок"
+        ]);
+    }
+}
 
-// //Функция которая выводит все предметы
-// function getAllSubjects($pdo){
-//     $sql = 'SELECT id, Name_subjects FROM subjects';
-//     $statement = $pdo->prepare($sql);
-//     $statement->execute();
-//     return $statement->fetchAll(PDO::FETCH_ASSOC);
-// }
+// Получить предмет по ID
+function getSubjectById($pdo, $id) {
+    $sql = "SELECT * FROM subjects WHERE id = :id";
+    $statement = $pdo->prepare($sql);
+    $statement->execute([':id' => $id]);
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    if($result){
+        http_response_code(200);
+        echo json_encode($result);
+    }else {
+        http_response_code(404);
+        echo json_encode([
+            'status' => false,
+            "message"=> "Ошибка при выводе всех оценок"
+        ]);
+    }
+}
 
-// // Получить предмет по ID
-// function getSubjectById($pdo, $id) {
-//     $sql = "SELECT * FROM subjects WHERE id = :id";
-//     $stmt = $pdo->prepare($sql);
-//     $stmt->execute([':id' => $id]);
-//     return $stmt->fetch(PDO::FETCH_ASSOC);
-// }
+//Функция которая добавляет предмет
+function AdditionSubjects($pdo, $data){
+    $data = [
+        "Name_Subjects"=> $_POST["Name_Subjects"],
+    ];
+    
+    $sql = "INSERT INTO `subjects`(`Name_subjects`) VALUES (:Name_Subjects)";
+    $statement = $pdo->prepare($sql);
+    $statement->execute($data);
+        if($statement){
+        http_response_code(200);
+        $response = [
+            'status' => true,
+            'message' => 'Успешное добавление предмета',
+            'id' => $pdo->lastInsertId()
+        ];
+        echo json_encode($response);
+    }else {
+        http_response_code(404);
+        $response = [
+            'status' => false,
+            'message' => 'Ошибка при добавлении предмета'
+        ];
+    }
+}
 
-// // Обновить предмет
-// function EditSubject($pdo, $data) {
-//     $sql = "UPDATE subjects SET Name_subjects = :Name_Subjects WHERE id = :id";
-//     $statement = $pdo->prepare($sql);
-//     return $statement->execute([
-//         ':Name_Subjects' => $data['Name_Subjects'],
-//         ':id' => $data['id']
-//     ]);
-// }
+// Обновить предмет
+function EditSubject($pdo, $id, $data) {
+    $data['id'] = $id;
+    $sql = "UPDATE subjects SET Name_subjects = :Name_Subjects WHERE id = :id";
+    $statement = $pdo->prepare($sql);
+    if($statement->execute($data)){
+        if($statement->rowCount() > 0){
+            $response = [
+                "status" => true,
+                "message" => "Успешное редактирование предмета",
+            ];
+            echo json_encode($response);            
+        } else {
+            http_response_code(400);
+            $response = [
+                "status" => "error",
+                "message" => "Error updating subjects!"
+            ];
+            echo json_encode($response);
+        }
+    }
+}
 
 // // Получить всех студентов с группами
 // function getAllStudents($pdo) {
@@ -279,36 +350,39 @@ if($statement->rowCount() > 0){
 //     return $statement->fetchAll(PDO::FETCH_ASSOC);
 // }
 
-// // Добавить оценку
-// function AddGrade($pdo, $data) {
-//     $sql = "INSERT INTO `grades` (`grade`, `student_id`, `subject_id`) 
-//             VALUES (:grade, :student_id, :subject_id)";
+// Обновить оценку
+function EditGrade($pdo, $id, $data){
+    $data['id'] = $id;
+    $sql = "UPDATE `grades` SET 
+                `grade` = :grade,
+                `student_id` = :student_id,
+                `subject_id` = :subject_id
+            WHERE `id` = :id";
     
-//     $statement = $pdo->prepare($sql);
-//     return $statement->execute([
-//         ':grade' => $data['grade'],
-//         ':student_id' => $data['student_id'],
-//         ':subject_id' => $data['subject_id']
-//     ]);
-// }
-
-
-// // Обновить оценку
-// function EditGrade($pdo, $data) {
-//     $sql = "UPDATE `grades` SET 
-//                 `grade` = :grade,
-//                 `student_id` = :student_id,
-//                 `subject_id` = :subject_id
-//             WHERE `id` = :id";
-    
-//     $statement = $pdo->prepare($sql);
-//     return $statement->execute([
-//         ':grade' => $data['grade'],
-//         ':student_id' => $data['student_id'],
-//         ':subject_id' => $data['subject_id'],
-//         ':id' => $data['id']
-//     ]);
-// }
+    $statement = $pdo->prepare($sql);
+    // return $statement->execute([
+    //     ':grade' => $data['grade'],
+    //     ':student_id' => $data['student_id'],
+    //     ':subject_id' => $data['subject_id'],
+    //     ':id' => $data['id']
+    // ]);
+    if($statement->execute($data)){
+        if($statement->rowCount() > 0){
+            $response = [
+                "status" => true,
+                "message" => "Успешное редактирование оценки",
+            ];
+            echo json_encode($response);            
+        } else {
+            http_response_code(400);
+            $response = [
+                "status" => "error",
+                "message" => "Error updating grade!"
+            ];
+            echo json_encode($response);
+        }
+    }
+}
 
 // //Функция для расписания занятиц (где, какой учитель и т.д., также использую COUCAT <- для объеденения)
 // function ShowSchedule($pdo){
