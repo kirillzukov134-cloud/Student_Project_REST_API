@@ -17,7 +17,11 @@ $type = $params[0];
 $id = $params[1];
 
 switch($type){
-    //СТУДЕНТЫ
+    //Для view.all.students.html (Таблица)
+    case 'students-table':
+        selectFullStudentsTable($pdo);
+    break;
+    //СТУДЕНТЫ (основное)
     case 'students':
         switch($method){
             //Вывод несколько | одного студента

@@ -38,7 +38,7 @@
                 </div>
         <button type="submit" class="btn btn-success">Добавить</button>
         <button type="reset" class="btn btn-secondary">Сбросить</button>
-        <a href="/index.html" class="btn btn-primary">Назад</a>
+        <a href="/Frontend/index.html" class="btn btn-primary">Назад</a>
     </form>
 </div>
 <script>
@@ -50,9 +50,9 @@ async function Addition(student) {
 Data.append('Name_student', document.getElementById('Name_student').value);
 Data.append('Surname_student', document.getElementById('Surname_student').value);
 Data.append('group_id', document.getElementById('group_id').value);
-Data.appned('birth_date', document.getElementById('birth_date').value);
-Data.appned('email', document.getElementById('email').value);
-Data.appned('phone', document.getElementById('phone').value);
+Data.append('birth_date', document.getElementById('birth_date').value);
+Data.append('email', document.getElementById('email').value);
+Data.append('phone', document.getElementById('phone').value);
 
 await fetch('http://studentsprojectrestfullapi/students/', {
     method: 'POST',
@@ -60,10 +60,13 @@ await fetch('http://studentsprojectrestfullapi/students/', {
 });
 
 document.getElementById('StudentAdd').reset();
-await selectCard();
+//Переадресация на главную страницу
+setTimeout(() => {
+    window.location.href = '/Frontend/index.html';
+}, 1000)
+
 }
 document.getElementById('StudentAdd').onsubmit = Addition;
-selectCard();
 </script>
 </body>
 </html>

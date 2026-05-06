@@ -11,19 +11,24 @@ function SelectAllStudents($pdo){
         echo json_encode(["error" => "Student not found"]);
     }
 }
-// //Функция для полного списка всех студентов в Table.php
-// function selectFullStudents($pdo){
-//     $sql = "SELECT 
-//         students.id,
-//         groups.name AS group_name,
-//         students.Name_student AS first_name,
-//         students.Surname_student AS last_name
-//     FROM students
-//     JOIN groups ON students.group_id = groups.id";
-// $statement = $pdo->query($sql); 
-// $results = $statement->fetchAll(PDO::FETCH_ASSOC);
-// echo json_encode($results);
-// }
+//Функция для полного списка всех студентов в view.all.students.html
+function selectFullStudentsTable($pdo){
+    $sql = "SELECT 
+        students.id,
+        groups.name AS group_name,
+        students.Name_student AS first_name,
+        students.Surname_student AS last_name
+    FROM students
+    JOIN groups ON students.group_id = groups.id";
+$statement = $pdo->query($sql); 
+$results =  $statement->fetchAll(PDO::FETCH_ASSOC);
+        if ($results) {
+        echo json_encode($results);
+    } else {
+        http_response_code(404);
+        echo json_encode(["error" => "Student not found"]);
+    }
+}
 
 function selectIDCard($pdo, $id){
     $sql = "SELECT * FROM students WHERE id = :id";
