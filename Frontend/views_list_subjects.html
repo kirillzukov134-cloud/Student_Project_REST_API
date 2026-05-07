@@ -7,7 +7,7 @@
     <title>Список всех предметов</title>
 </head>
 <body>
-    <div class="container">
+    <div>
         <div class="col-md-5 container mt-4 w-50 p-3 border border border-dark" style="background-color: #eee;">
             <div class="text-center">
                 <legend><b>Список предметов</b></legend>
@@ -29,6 +29,7 @@
         </div>
     </div>
 <script>
+//Выводить все предметы
 async function allSubjects(){
     let response = await fetch('http://studentsprojectrestfullapi/subjects/');
     let subjects = await response.json();
@@ -43,12 +44,18 @@ subjects.forEach(subject => {
         <th>${subject.id}</th>
         <th>${subject.Name_subjects}</th>
         <th>
-            <a href="#" class="btn btn-danger">Удалить</a>
+            <button onclick="deleteSubject(${subject.id})"class="btn btn-danger">Удалить</button>
             <a href="#" class="btn btn-warning">Изменить</a>
         </th>
     </tr>
     ` 
 })
+}
+//Удаление предмета
+async function deleteSubject(id) {
+    const response = await fetch(`http://studentsprojectrestfullapi/subjects/${id}`, {
+        method: 'DELETE',
+    });
 }
 allSubjects();
 </script>

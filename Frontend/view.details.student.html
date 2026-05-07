@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Подробный просмотр студента</title>
+</head>
+<body>
+    <div class="container mt-3 w-50 p-4 border border border-dark" style="background-color: #eee;">
+    <!-- <?php foreach($studentResult as $student): ?> -->
+        <div class="card-header bg-success text-white">
+            <h5 id ="idDiv" class="text-center">
+                <!-- <?php echo htmlspecialchars($student['last_name']) . ' ' . htmlspecialchars($student['first_name']); ?> -->
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover">
+                <tr>
+                    <th class="bg-light">Группа:</th>
+                    <td id="group"></td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Номер телефона:</th>
+                    <td id="phone"></td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Почта:</th>
+                    <td id="email"></td>
+                </tr>
+                <tr>
+                    <th class="bg-light">День рождения:</th>
+                    <td id="birth_date"></td>
+                </tr>
+            <tr>
+                <th class="bg-light">Навигационные кнопки:</th>
+                <td>
+                    <a href="/Frontend//index.html" class="btn btn-success">Назад</a>
+                    <a href="#?>" class="btn btn-warning">Изменить</a>
+                    <a href="#?>" class="btn btn-danger">Удалить</a>
+                </td>
+            </tr>
+            </table>
+        </div>
+    </div>
+<script>
+async function detailsStudent() {
+    const Url = new URLSearchParams(window.location.search);
+    const id = Url.get('id');
+
+    let response = await fetch(`http://studentsprojectrestfullapi/students/${id}`)
+    let details = await response.json();
+
+    document.getElementById('idDiv').innerText = `${details.first_name} ${details.last_name}`;
+    document.getElementById('group').innerText = `${details.group_name}`;
+    document.getElementById('phone').innerText = `${details.phone}`;
+    document.getElementById('email').innerText = `${details.email}`;
+    document.getElementById('birth_date').innerText = `${details.birth_date}`;
+}
+// async function 
+// detailsStudent();
+</script>
+</body>
+</html>

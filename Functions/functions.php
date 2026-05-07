@@ -131,7 +131,7 @@ function GradesStudent($pdo, $student_id) {
     $statement->execute([':student_id' => $student_id]); 
     $grades = $statement->fetchAll(PDO::FETCH_ASSOC);
     if ($grades) {
-        echo json_encode($grades);
+        echo json_encode($grades, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     } else {
         http_response_code(404);
         echo json_encode(['message' => 'Оценки не найдены']);
