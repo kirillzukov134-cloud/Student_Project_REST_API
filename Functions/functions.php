@@ -321,7 +321,7 @@ function AdditionSubjects($pdo, $data){
 // Обновить предмет
 function EditSubject($pdo, $id, $data) {
     $data['id'] = $id;
-    $sql = "UPDATE subjects SET Name_subjects = :Name_Subjects WHERE id = :id";
+    $sql = "UPDATE subjects SET Name_subjects = :Name_subjects WHERE id = :id";
     $statement = $pdo->prepare($sql);
     if($statement->execute($data)){
         if($statement->rowCount() > 0){

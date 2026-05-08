@@ -23,7 +23,7 @@
                         
                     </tbody>
                 </table>
-                    <a href="#" class="btn btn-success">Добавить предмет</a>
+                    <a href="/Frontend/add.subjects.html" class="btn btn-success">Добавить предмет</a>
                     <a href="/Frontend/index.html" class="btn btn-primary">Назад</a>
             </div>
         </div>
@@ -45,7 +45,7 @@ subjects.forEach(subject => {
         <th>${subject.Name_subjects}</th>
         <th>
             <button onclick="deleteSubject(${subject.id})"class="btn btn-danger">Удалить</button>
-            <a href="#" class="btn btn-warning">Изменить</a>
+            <a href="/Frontend/edit.subjects.html?id=${subject.id}" class="btn btn-warning">Изменить</a>
         </th>
     </tr>
     ` 
@@ -56,6 +56,7 @@ async function deleteSubject(id) {
     const response = await fetch(`http://studentsprojectrestfullapi/subjects/${id}`, {
         method: 'DELETE',
     });
+location.reload();
 }
 allSubjects();
 </script>
