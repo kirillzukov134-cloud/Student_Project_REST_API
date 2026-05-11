@@ -30,19 +30,6 @@ $results =  $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 
-function selectIDCard($pdo, $id){
-    $sql = "SELECT * FROM students WHERE id = :id";
-$statement = $pdo->prepare($sql);
-$statement->execute(['id' => $id]);
-$data = $statement->fetch(PDO::FETCH_ASSOC);
-
-    if ($data) {
-        echo json_encode($data);
-    } else {
-        http_response_code(404);
-        echo json_encode(["error" => "Student not found"]);
-    }
-}
 
 //Добавление студентов в add.view.student.php
 function AdditionStudent($pdo, $data){
@@ -95,6 +82,7 @@ function ShowMoreDetails($pdo, $id){
     $sql = "SELECT 
         students.id,
         groups.name AS group_name, 
+        -- students.group_id,
         students.Name_student AS first_name, 
         students.Surname_student AS last_name, 
         students.phone AS phone, 
@@ -106,7 +94,7 @@ function ShowMoreDetails($pdo, $id){
     
     $statement = $pdo->prepare($sql);
     $statement->execute(['id' => $id]);
-    $data =  $statement->fetchAll(PDO::FETCH_ASSOC);
+    $data =  $statement->fetch(PDO::FETCH_ASSOC);
     
     if ($data) {
         echo json_encode($data);
@@ -153,19 +141,19 @@ function GradesStudent($pdo, $student_id) {
 // }
 
 //Функция для получения данных одного студента в edit.details.php
-function getStudentById($pdo, $id){
-    $sql = "SELECT * FROM students WHERE id = :id";
-    $statement = $pdo->prepare($sql);
-    $statement->execute(['id' => $id]);
-    $result = $statement->fetch(PDO::FETCH_ASSOC);
+// function getStudentById($pdo, $id){
+//     $sql = "SELECT * FROM students WHERE id = :id";
+//     $statement = $pdo->prepare($sql);
+//     $statement->execute(['id' => $id]);
+//     $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-    if($result){
-        echo json_encode($result);
-    }else {
-        http_response_code(404);
-        echo json_encode(['Студент не найден']);
-    }
-}
+//     if($result){
+//         echo json_encode($result);
+//     }else {
+//         http_response_code(404);
+//         echo json_encode(['Студент не найден']);
+//     }
+// }
 
 //Функция для обновления данных существующего студента
 function EditStudent($pdo, $id, $data){

@@ -35,9 +35,9 @@
             <tr>
                 <th class="bg-light">Навигационные кнопки:</th>
                 <td>
-                    <a href="/Frontend//index.html" class="btn btn-success">Назад</a>
-                    <a href="#?>" class="btn btn-warning">Изменить</a>
-                    <a href="#?>" class="btn btn-danger">Удалить</a>
+                    <a href="/Frontend/index.html" class="btn btn-success">Назад</a>
+                    <a href="/Frontend/edit.details.student.html" class="btn btn-warning" id="editLink">Изменить</a>
+                    <a onclick="deleteStudent()" class="btn btn-danger">Удалить</a>
                 </td>
             </tr>
             </table>
@@ -56,9 +56,23 @@ async function detailsStudent() {
     document.getElementById('phone').innerText = `${details.phone}`;
     document.getElementById('email').innerText = `${details.email}`;
     document.getElementById('birth_date').innerText = `${details.birth_date}`;
+    document.getElementById('editLink').href = `/Frontend/edit.details.student.html?id=${id}`;
 }
+detailsStudent();
+async function deleteStudent(){
+    const Url = new URLSearchParams(window.location.search);
+    const id = Url.get('id');
+
+    let response = await fetch(`http://studentsprojectrestfullapi/students/${id}`, {
+    method: 'DELETE'
+    });
+setTimeout(() => {
+    window.location.href = '/Frontend/index.html';
+}, 100);
+}
+// document.getElementById('editLink').href = `/Frontend/edit.details.student.html?id=${id}`;
 // async function 
-// detailsStudent();
+
 </script>
 </body>
 </html>

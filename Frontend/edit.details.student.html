@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Форма редактирования студента</title>
+</head>
+<body>
+<div class="container mt-4 w-50 p-3 border border border-dark" style="background-color: #eee;">
+        <form id="idForm" method="post">
+            <h2 class="text-center">Редактирование данных студента</h2>
+            <fieldset>
+                <legend>Персональные данные</legend>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Имя:</label>
+                    <input id="name" type="text" name="Name_student" class="form-control" value="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="surname" class="form-label">Фамилия:</label>
+                    <input id="surname" type="text" name="Surname_student" class="form-control" value="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="group" class="form-label">Группа (ID):</label>
+                    <input id="group" type="number" name="group_id" class="form-control" value="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="birth" class="form-label">Дата рождения:</label>
+                    <input id="birth" type="date" name="birth_date" class="form-control" value="" required>
+                </div>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Контакты</legend>
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail:</label>
+                    <input id="email" type="email" name="email" class="form-control" value="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Телефон:</label>
+                    <input id="phone" type="tel" name="phone" class="form-control" value="" required>
+                </div>        
+            </fieldset>
+            
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a href="/Frontend/view.details.student.html" class="btn btn-success" id="back">Назад</a>
+            </div>
+        </form>
+    </div>
+<script>
+async function editStudent(){
+    const Url = new URLSearchParams(window.location.search);
+    const id = Url.get('id');
+
+    let response = await fetch(`http://studentsprojectrestfullapi/students/${id}`);
+    let student = await response.json();
+    
+    // console.log(student);
+document.getElementById('name').value = student.first_name;
+document.getElementById('surname').value = student.last_name;
+document.getElementById('group').value = student.group_id;
+document.getElementById('birth').value = student.birth_date;
+document.getElementById('email').value = student.email;
+document.getElementById('phone').value = student.phone;
+
+//Назад
+document.getElementById('back').href = `/Frontend/view.details.student.html?id=${id}`;
+
+//Изменение 
+document.querySelector('#idForm').addEventListener('submit', async(event) => {
+    event.preventDefault();
+
+const Data = new FormData(event.target);
+
+//В объект 
+const json = Object.fromEntries(Data.entries());
+
+let response = await fetch(`http://studentsprojectrestfullapi/students/${id}`, {
+    method: 'PATCH',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(json)
+})
+alert("Успешно обновлено")
+
+    setTimeout(() => {
+        window.location.href = `/Frontend/view.details.student.html?id=` + id;
+    }, 1000);
+});
+}
+
+editStudent();
+
+</script>
+</body>
+</html>
