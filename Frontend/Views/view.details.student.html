@@ -36,7 +36,7 @@
                 <th class="bg-light">Навигационные кнопки:</th>
                 <td>
                     <a href="/Frontend/index.html" class="btn btn-success">Назад</a>
-                    <a href="/Frontend/edit.details.student.html" class="btn btn-warning" id="editLink">Изменить</a>
+                    <a href="/Frontend/Edits/edit.details.student.html" class="btn btn-warning" id="editLink">Изменить</a>
                     <a onclick="deleteStudent()" class="btn btn-danger">Удалить</a>
                 </td>
             </tr>
@@ -56,9 +56,12 @@ async function detailsStudent() {
     document.getElementById('phone').innerText = `${details.phone}`;
     document.getElementById('email').innerText = `${details.email}`;
     document.getElementById('birth_date').innerText = `${details.birth_date}`;
-    document.getElementById('editLink').href = `/Frontend/edit.details.student.html?id=${id}`;
+
+    document.getElementById('editLink').href = `/Frontend/Edits/edit.details.student.html?id=${id}`;
 }
 detailsStudent();
+
+//Удаление
 async function deleteStudent(){
     const Url = new URLSearchParams(window.location.search);
     const id = Url.get('id');
@@ -67,7 +70,7 @@ async function deleteStudent(){
     method: 'DELETE'
     });
 setTimeout(() => {
-    window.location.href = '/Frontend/index.html';
+    window.location.href = './Frontend/index.html';
 }, 100);
 }
 // document.getElementById('editLink').href = `/Frontend/edit.details.student.html?id=${id}`;

@@ -19,13 +19,13 @@
 <!-- Навигационные кнопки -->
 <div class="d-flex justify-content-center gap-3 mb-4 " style="padding: 3px;">
     <nav id="navbar-example2" class="navbar bg-body-tertiary px-3 mb-3">
-        <a href="/Frontend/view.all.students.html" class="btn btn-secondary btn-lg">
+        <a href="/Frontend/Views/view.all.students.html" class="btn btn-secondary btn-lg">
             Просмотреть список студентов
         </a>
-        <a href="/Frontend/add.student.html" class="btn btn-success btn-lg">
+        <a href="/Frontend/Adds/add.student.html" class="btn btn-success btn-lg">
             Добавить студента
         </a>
-            <a href="/Frontend/views_list_subjects.html" class="btn btn-info btn-lg">
+            <a href="/Frontend/Views/views_list_subjects.html" class="btn btn-info btn-lg">
             Список всех предметов
         </a>
         </a>
@@ -58,8 +58,8 @@ async function selectCard() {
                     <div class="card-body">
                         <h5 class="card-title">${student.Name_student} ${student.Surname_student}</h5>
                         <p class="card-text">Группа: ${student.group_id}</p>
-                            <a href="/Frontend/view.details.student.html?id=${student.id}" class="btn btn-primary">Подробнее</a>
-                            <a href="/Frontend/view.grades.student.html?id=${student.id}" class="btn btn-primary">Оценки</a>
+                            <a href="/Frontend/Views/view.details.student.html?id=${student.id}" class="btn btn-primary">Подробнее</a>
+                            <a href="/Frontend/Views/view.grades.student.html?id=${student.id}" class="btn btn-primary">Оценки</a>
                     </div>
                 </div>
             </div>

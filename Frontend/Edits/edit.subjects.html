@@ -16,7 +16,7 @@
     </div>
     <div class="text-center">
         <button type="submit" class="btn btn-warning">Изменить</button>
-        <a href="/Frontend/views_list_subjects.html" class="btn btn-primary">Назад</a>        
+        <a href="/Frontend/Views/views_list_subjects.html" class="btn btn-primary">Назад</a>        
     </div>
     </form>
 <script>
@@ -48,7 +48,7 @@ let response = await fetch(`http://studentsprojectrestfullapi/subjects/${id}`, {
 alert("Успешно обновлён")
 
     setTimeout(() => {
-        window.location.href = `/Frontend/views_list_subjects.html`;
+        window.location.href = `/Frontend/Views/views_list_subjects.html`;
     }, 1000);
 });
 }

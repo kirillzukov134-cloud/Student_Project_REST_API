@@ -44,7 +44,7 @@
             
             <div class="d-flex gap-2 mt-3">
                 <button type="submit" class="btn btn-primary">Сохранить</button>
-                <a href="/Frontend/view.details.student.html" class="btn btn-success" id="back">Назад</a>
+                <a href="/Frontend/edit.details.student.html" class="btn btn-success" id="back">Назад</a>
             </div>
         </form>
     </div>
@@ -65,7 +65,7 @@ document.getElementById('email').value = student.email;
 document.getElementById('phone').value = student.phone;
 
 //Назад
-document.getElementById('back').href = `/Frontend/view.details.student.html?id=${id}`;
+document.getElementById('back').href = `/Frontend/index.html?id=${id}`;
 
 //Изменение 
 document.querySelector('#idForm').addEventListener('submit', async(event) => {
@@ -86,7 +86,7 @@ let response = await fetch(`http://studentsprojectrestfullapi/students/${id}`, {
 alert("Успешно обновлено")
 
     setTimeout(() => {
-        window.location.href = `/Frontend/view.details.student.html?id=` + id;
+        window.location.href = `/Frontend/Views/view.details.student.html?id=` + id;
     }, 1000);
 });
 }
