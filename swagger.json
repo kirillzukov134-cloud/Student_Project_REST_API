@@ -1,0 +1,935 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "StudentProject API",
+        "version": "1.0.0",
+        "description": "API для системы управления студентами, оценками и предметами",
+        "contact": {
+            "name": "Разработчик",
+            "email": "developer@example.com"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://studentsprojectrestfullapi",
+            "description": "Локальный сервер"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Студенты",
+            "description": "Управление студентами"
+        },
+        {
+            "name": "Оценки",
+            "description": "Управление оценками"
+        },
+        {
+            "name": "Предметы",
+            "description": "Управление предметами"
+        }
+    ],
+    "paths": {
+        "/students/": {
+            "get": {
+                "tags": ["Студенты"],
+                "summary": "Получить список всех студентов",
+                "description": "Возвращает полный список всех студентов из базы данных",
+                "operationId": "getAllStudents",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "Name_student": {
+                                                "type": "string",
+                                                "example": "Андрей"
+                                            },
+                                            "Surname_student": {
+                                                "type": "string",
+                                                "example": "Арунов"
+                                            },
+                                            "phone": {
+                                                "type": "string",
+                                                "example": "+7-906-457-59-86"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "example": "andrey@example.com"
+                                            },
+                                            "group_id": {
+                                                "type": "integer",
+                                                "example": 2
+                                            },
+                                            "birth_date": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2008-05-15"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Студенты не найдены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Student not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Студенты"],
+                "summary": "Добавить нового студента",
+                "description": "Создаёт новую запись студента в базе данных",
+                "operationId": "addStudent",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["Name_student", "Surname_student", "phone", "email", "group_id", "birth_date"],
+                                "properties": {
+                                    "Name_student": {
+                                        "type": "string",
+                                        "description": "Имя студента",
+                                        "example": "Иван"
+                                    },
+                                    "Surname_student": {
+                                        "type": "string",
+                                        "description": "Фамилия студента",
+                                        "example": "Петров"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "description": "Номер телефона",
+                                        "example": "+7-900-123-45-67"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "description": "Email адрес",
+                                        "example": "ivan@example.com"
+                                    },
+                                    "group_id": {
+                                        "type": "integer",
+                                        "description": "ID группы",
+                                        "example": 1
+                                    },
+                                    "birth_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "description": "Дата рождения (ГГГГ-ММ-ДД)",
+                                        "example": "2005-03-20"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Студент успешно добавлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Успешное добавление студента"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 15
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка при добавлении",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Произошла ошибка при добавлении"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/students/{id}": {
+            "get": {
+                "tags": ["Студенты"],
+                "summary": "Получить информацию о студенте",
+                "description": "Возвращает подробную информацию о студенте по его ID",
+                "operationId": "getStudentById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID студента",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "first_name": {
+                                            "type": "string",
+                                            "example": "Андрей"
+                                        },
+                                        "last_name": {
+                                            "type": "string",
+                                            "example": "Арунов"
+                                        },
+                                        "group_name": {
+                                            "type": "string",
+                                            "example": "ПСУ-31"
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "+7-906-457-59-86"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "andrey@example.com"
+                                        },
+                                        "birth_date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2008-05-15"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Студент не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Student not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Студенты"],
+                "summary": "Обновить данные студента",
+                "description": "Обновляет информацию о студенте. Все поля опциональны.",
+                "operationId": "updateStudent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID студента",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "Name_student": {
+                                        "type": "string",
+                                        "description": "Имя",
+                                        "example": "Алексей"
+                                    },
+                                    "Surname_student": {
+                                        "type": "string",
+                                        "description": "Фамилия",
+                                        "example": "Иванов"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "description": "Телефон",
+                                        "example": "+7-999-888-77-66"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "description": "Email",
+                                        "example": "alex@example.com"
+                                    },
+                                    "group_id": {
+                                        "type": "integer",
+                                        "description": "ID группы",
+                                        "example": 1
+                                    },
+                                    "birth_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "description": "Дата рождения",
+                                        "example": "2005-01-01"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешно обновлено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully updated"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка обновления",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error updating student!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Студенты"],
+                "summary": "Удалить студента",
+                "description": "Удаляет запись студента по ID",
+                "operationId": "deleteStudent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID студента",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Студент удалён",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Успешное удаление"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ошибка удаления",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка при удалении"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/grades/": {
+            "get": {
+                "tags": ["Оценки"],
+                "summary": "Получить оценки студента",
+                "description": "Возвращает все оценки конкретного студента по всем предметам",
+                "operationId": "getGrades",
+                "parameters": [
+                    {
+                        "name": "student_id",
+                        "in": "query",
+                        "required": true,
+                        "description": "ID студента",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список оценок",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "grade_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "Оценка": {
+                                                "type": "string",
+                                                "example": "5"
+                                            },
+                                            "Предмет": {
+                                                "type": "string",
+                                                "example": "Математика"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Оценки не найдены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Оценки не найдены"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Оценки"],
+                "summary": "Добавить оценку",
+                "description": "Добавляет оценку студенту по предмету",
+                "operationId": "addGrade",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["grade", "student_id", "subject_id"],
+                                "properties": {
+                                    "grade": {
+                                        "type": "integer",
+                                        "description": "Оценка (2, 3, 4, 5)",
+                                        "minimum": 2,
+                                        "maximum": 5,
+                                        "example": 5
+                                    },
+                                    "student_id": {
+                                        "type": "integer",
+                                        "description": "ID студента",
+                                        "example": 1
+                                    },
+                                    "subject_id": {
+                                        "type": "integer",
+                                        "description": "ID предмета",
+                                        "example": 2
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Оценка добавлена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Успешное добавление оценки"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 25
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка добавления",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка при добавлении оценки"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/grades/{id}": {
+            "delete": {
+                "tags": ["Оценки"],
+                "summary": "Удалить оценку",
+                "description": "Удаляет оценку по её ID",
+                "operationId": "deleteGrade",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID оценки",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Оценка удалена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Успешное удаление"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ошибка удаления",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка при удалении"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subjects/": {
+            "get": {
+                "tags": ["Предметы"],
+                "summary": "Получить список всех предметов",
+                "description": "Возвращает список всех учебных предметов",
+                "operationId": "getAllSubjects",
+                "responses": {
+                    "200": {
+                        "description": "Список предметов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "Name_subjects": {
+                                                "type": "string",
+                                                "example": "Математика"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Предметы не найдены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка при выводе всех предметов"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Предметы"],
+                "summary": "Добавить предмет",
+                "description": "Добавляет новый учебный предмет",
+                "operationId": "addSubject",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["Name_subjects"],
+                                "properties": {
+                                    "Name_subjects": {
+                                        "type": "string",
+                                        "description": "Название предмета",
+                                        "example": "Информатика"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Предмет добавлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Успешное добавление предмета"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 5
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка добавления",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка при добавлении предмета"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subjects/{id}": {
+            "get": {
+                "tags": ["Предметы"],
+                "summary": "Получить информацию о предмете",
+                "description": "Возвращает данные предмета по его ID",
+                "operationId": "getSubjectById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID предмета",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные предмета",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "Name_subjects": {
+                                            "type": "string",
+                                            "example": "Математика"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Предмет не найден"
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Предметы"],
+                "summary": "Обновить предмет",
+                "description": "Изменяет название предмета",
+                "operationId": "updateSubject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID предмета",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["Name_subjects"],
+                                "properties": {
+                                    "Name_subjects": {
+                                        "type": "string",
+                                        "description": "Новое название предмета",
+                                        "example": "Высшая математика"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Предмет обновлён",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Успешное редактирование предмета"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка обновления",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error updating subjects!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Предметы"],
+                "summary": "Удалить предмет",
+                "description": "Удаляет предмет по ID",
+                "operationId": "deleteSubject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID предмета",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Предмет удалён",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Успешное удаление"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ошибка удаления"
+                    }
+                }
+            }
+        }
+    }
+}
